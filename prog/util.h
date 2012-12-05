@@ -29,6 +29,7 @@ make_trigonal_piezo_tensor_32(double,double);
 Matrix3 rotx(double);
 Matrix3 roty(double);
 Matrix3 rotz(double);
+Matrix3 turn_mat(double);
 Matrix3 euler(double, double, double);
 
 Matrix3 eps2mat(double,double);
@@ -43,11 +44,23 @@ Vector3 get_polarization( const Matrix3&, double);
 
 Vector3 ort(const Vector3& );
 
+Vector3 slowness_vec(const Vector3& n,
+                int ind,
+                const Tensor& tens,
+                double rho);
+
+Vector3 polaris(const Vector3& n,
+                int ind,
+                const Tensor& tens,
+                double rho);
+
 Vector3 slow_normal(const Vector3& n,
                     int ind,
                     const Matrix3& epsilon,
                     const Tensor& tens,
                     const Tensor3& piezotens);
+
+Matrix3 make_strain(const Vector3& q, const Vector3& s);
 
 std::ostream&
 operator<<(std::ostream& os, const VCD& r);

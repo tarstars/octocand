@@ -182,6 +182,16 @@ Matrix3 roty (double phi) {
 	return ret;
 }
 
+Matrix3 turn_mat (double phi) {
+    Matrix3 ret;
+
+    ret(0,0)=  cos(phi); ret(0,1)= sin(phi); ret(0,2)= 0;
+    ret(1,0)= -sin(phi); ret(1,1)= cos(phi); ret(1,2)= 0;
+    ret(2,0)=         0; ret(2,1)=        0; ret(2,2)= 1;
+
+    return ret;
+}
+
 Matrix3 euler(double alpha, double beta, double gamma){
 return rotx(alpha)*roty(beta)*rotz(gamma);
 }
@@ -308,15 +318,38 @@ double slowness(const Vector3& n,
     return sqrt(1/roots[ind]);
 }
 
-/*double slowness(const Vector3& n,
+Vector3 slowness_vec(const Vector3& n,
                 int ind,
-                const Matrix3& epsilon,
                 const Tensor& tens,
-                const Tensor3& piezotens){
+                double rho){
 
-    Vector3 n0(0.6,0.8,0);
-    return 1/(n*n0);
-}*/
+
+    Matrix3 cr=tens.crist(n);
+    Poly pol= cr.characteristic();
+    VCD roots = pol.all_roots();
+    VD vels = rho2v(pol.all_roots(),rho);
+    sort(vels.begin(),vels.end());
+    return n*(1/vels[ind]);
+
+}
+
+Vector3 polaris(const Vector3& n,
+                int ind,
+                const Tensor& tens,
+                double rho){
+
+    Matrix3 cr=tens.crist(n);
+    Poly pol = cr.characteristic();
+
+    VCD comp_roots = pol.all_roots();
+    vector<double> roots(comp_roots.size());
+    for(int t = 0; t < int(comp_roots.size()); ++t)
+            roots[t] = real(comp_roots[t]);
+    sort(roots.begin(),roots.end());
+
+    double gamma = roots[ind];
+    return get_polarization( cr, gamma);
+}
 
 Vector3 slow_normal(const Vector3& n,
                     int ind,
@@ -345,6 +378,19 @@ Vector3 slow_normal(const Vector3& n,
     Vector3 dsn2=sn2-sn0;
 
     return (dsn1&dsn2).normalized();
+}
+
+Matrix3 make_strain(const Vector3& q, const Vector3& s) {
+
+    Matrix3 ret;
+
+    for (int i=0; i<3; ++i) {
+        for (int j=0; j<3; ++j) {
+            ret(i,j)=(q(i)*s(j)+q(j)*s(i))/2;
+        }
+    }
+
+    return ret;
 }
 
 //#pragma package(smart_init)

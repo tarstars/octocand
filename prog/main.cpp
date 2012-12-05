@@ -445,7 +445,7 @@ void test_insect_piezo_dihotom() {
 
             if (deviant(a, n1, n2, t, epsilon, pc)*deviant(b, n1, n2, t, epsilon, pc)<0) {
 
-                double c;
+                double c=0;
 
                 while (abs(b-a)>fin_eps) {
                     c = (a+b)/2;
@@ -530,7 +530,7 @@ void test_polarization(){
 
 	for (int i = 0; i < 3; i++) {
 		double gamma = roots[i].real();
-		double V=sqrt(gamma/5.96e3);
+
 		Vector3 q = get_polarization( cr, gamma);
         //cout << "V= " << V;
         //cout << " q= " << q << endl;
@@ -568,7 +568,7 @@ void test_polarization_te(){
 	dest << phi*180/M_PI << " ";
 	for (int i = 0; i < 3; i++) {
 		double gamma = roots[i];//.real();
-		double V=sqrt(gamma/6.25e3);
+
 		Vector3 q = get_polarization( cr, gamma);
 
 		double vm=abs(q*n);
@@ -625,7 +625,7 @@ void test_polarization_te_piezo(){
     //dest << phi*180/M_PI << " ";
 	for (int i = 0; i < 3; i++) {
 		double gamma = roots[i];//.real();
-		double V=sqrt(gamma/6.25e3);
+
 		Vector3 q = get_polarization( tt, gamma);
 
 		double vm=abs(q*n);
@@ -1005,13 +1005,11 @@ void make_cadr(int j, const Tensor& t, const Vector3& n) {
 
     VCD roots = pol.all_roots();
 
-    //Vector3 m;
-
     for (int i = 0; i < 3; i++) {
         double gamma = roots[i].real();
-        double V=sqrt(gamma/5.96e3);
+
         Vector3 q = get_polarization(cr, gamma);
-        //m(i) = n*q;
+
         int r, g, b;
         if (i == 0) {r=1, g=0, b=0;}
         else
@@ -1052,8 +1050,42 @@ void sphere_travel() {
     }
 }
 
+void turn_matrix() {
+
+    Tensor t=make_tetragonal_tensor(5.6E10,5.145E10,2.2E10,10.6E10,6.6E10,2.65E10);
+
+    double phi = 10*M_PI/180;
+    Matrix3 m = turn_mat(phi);
+    Tensor tt=t*m;
+
+    ofstream dest("test_turn.txt");
+    for (double phi = 0; phi < 2*M_PI; phi+=0.01) {
+        Matrix3 cr=tt.crist(Vector3(cos(phi),sin(phi),0));
+        Poly pol= cr.characteristic();
+        VCD roots = pol.all_roots();
+        VD vels = rho2v(pol.all_roots(),5.96E3);
+        sort(vels.begin(),vels.end());
+        dest << phi*180/M_PI << " " << 1/vels[0] << endl;
+    }
+}
+
+void test_make_strain() {
+
+    Tensor t=make_tetragonal_tensor(5.6E10,5.145E10,2.2E10,10.6E10,6.6E10,2.65E10);
+
+    Vector3 n(1,0,0);
+    int ind = 0;
+    double rho = 5.96E3;
+
+    cout << make_strain(polaris(n,ind,t,rho),slowness_vec(n,ind,t,rho)) << endl;
+}
+
 int main(int argc, char* argv[])
 {
+    test_make_strain();
+
+    //turn_matrix();
+
     //sphere_travel();
 
 	//test_jum();
@@ -1093,7 +1125,7 @@ int main(int argc, char* argv[])
 
     //test_te_piezo();
 
-    test_PR_te();
+    //test_PR_te();
 
     //group();
 
