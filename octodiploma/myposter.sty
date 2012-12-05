@@ -1,0 +1,199 @@
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+
+\usepackage{amsmath,amssymb}
+
+% Пакеты русского языка конфликтуют с размерами шрифтов a0poster
+\usepackage[T2A]{fontenc}
+\usepackage[cp1251]{inputenc}
+
+% ВНИМАНИЕ!
+% Требуется заменить файл "/tex/latex/cyrillic/t2acmss.fd" на прилагаемый!
+% При этом становятся доступны все размеры шрифтов "sffamily" в кодировке T2A
+
+
+\newif\if@russify
+\@russifyfalse
+\DeclareOption{russify}{\@russifytrue}
+
+\newif\if@sizetwenty
+\@sizetwentyfalse
+\DeclareOption{sizetwenty}{\@sizetwentytrue}
+\ProcessOptions
+
+
+
+\usepackage[pdftex]{graphicx}
+
+\usepackage{color}
+\definecolor{DarkBlue}{rgb}{0.1,0.1,0.5}
+\definecolor{Red}{rgb}{0.9,0.0,0.1}
+
+\if@sizetwenty
+    \renewcommand{\tiny}{\fontsize{11}{12}\selectfont}
+    \renewcommand{\scriptsize}{\fontsize{12}{14}\selectfont}
+    \renewcommand{\footnotesize}{\fontsize{14.4}{18}\selectfont}
+    \renewcommand{\small}{\fontsize{17.28}{22}\selectfont}
+    \renewcommand{\normalsize}{\fontsize{20.74}{25}\selectfont}
+    \renewcommand{\large}{\fontsize{24.88}{30}\selectfont}
+    \renewcommand{\Large}{\fontsize{29.86}{37}\selectfont}
+    \renewcommand{\LARGE}{\fontsize{35.83}{45}\selectfont}
+    \renewcommand{\huge}{\fontsize{43}{54}\selectfont}
+    \renewcommand{\Huge}{\fontsize{51.6}{64}\selectfont}
+    \renewcommand{\veryHuge}{\fontsize{61.92}{77}\selectfont}
+    \renewcommand{\VeryHuge}{\fontsize{74.3}{93}\selectfont}
+    \renewcommand{\VERYHuge}{\fontsize{89.16}{112}\selectfont}
+\fi
+
+\def\Title#1{\renewcommand{\baselinestretch}{1.25}\selectfont%
+ \noindent{\veryHuge\color{Red}\sffamily\bfseries #1}\\ \bigskip}
+\def\Head#1{\noindent\hbox to \hsize{\hfil{\LARGE\color{DarkBlue}\bfseries #1}}}
+\def\CHead#1{\noindent\hbox to \hsize{\hfil{\LARGE\color{DarkBlue}\bfseries\slshape #1}\hfil}\medskip}
+\def\Subhead#1{\noindent{\large\color{DarkBlue} #1}}
+
+\def\Author#1{\noindent{\LARGE\color{DarkBlue}\bfseries #1 \\ \hfil\break }}
+\def\EMail#1{\noindent{\LARGE\color{DarkBlue}\ttfamily #1 \\ \hfil\break }}
+\def\Address#1{\noindent{\LARGE\color{DarkBlue}\sffamily\slshape #1 \\ \hfil\break }}
+
+\usepackage[absolute]{textpos}
+
+
+\def\Rot{\mathop{\operator@font rot}\nolimits}
+\def\Grad{\mathop{\operator@font grad}\nolimits}
+\def\PD#1#2{\frac{\partial #1}{\partial #2}}
+\def\PDD#1#2{\frac{\partial^2 #1}{\partial #2^2}}
+\def\defeq{\mathop{=}\limits^{\rm def}}
+\def\Int{\mathop{\int}\limits_{-\infty}^{+\infty}}
+\def\Iint{\mathop{\iint}\limits_{-\infty}^{+\infty}}
+\def\sinc{\mathop{\operator@font sinc}\nolimits}
+\def\lim{\mathop{\operator@font lim}\limits}
+\def\abs#1{\mathop{\left|\ #1\ \right|}\nolimits}
+\def\const{\mathop{\operator@font const}\nolimits}
+\def\dg{^\circ}
+\def\Ohm{\mathbf{\Omega}}
+\def\iu{\mathtt{i}}
+\def\en#1{\mathtt{e}^{#1}}
+\def\chf#1{$\mathrm{#1}$}
+
+  \renewenvironment{abstract}{\CHead{\abstractname}\slshape}{\\ \bigskip \hrule}
+
+  \newcommand{\ackname}{Acknowledgements}
+  \newenvironment{acknowledgements}{\hrule\medskip\CHead{\ackname}\slshape}{\\}
+
+\renewenvironment{thebibliography}[1]
+     {\hrule\medskip%
+      \CHead{\refname}%
+      \vspace{-0.5em}
+      \list{%
+      \@biblabel{\@arabic\c@enumiv}}%
+           {\parskip=0pt
+           \partopsep=0pt
+           \topsep=0pt
+            \parsep=0pt plus 1pt
+            \itemsep=\parsep
+           \settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+      {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+
+\renewcommand{\@biblabel}[1]{\emph{#1}.\hfill}
+
+\setlength\abovecaptionskip{0\p@}
+\setlength\belowcaptionskip{10\p@}
+
+
+\newcommand{\FigCaption}[1]{%
+\refstepcounter{figure}
+%  \vskip\abovecaptionskip
+\sbox{\@tempboxa}{\textbf{\figurename \@arabic\c@figure. #1.}}%
+\ifdim \wd\@tempboxa >\columnwidth%
+    \textbf{\figurename\ \@arabic\c@figure. #1.} \par
+\else
+    \global\@minipagefalse
+    \hbox to \columnwidth {\hfil \textbf{\figurename\ \@arabic\c@figure. #1.}\hfil}%
+\fi
+}
+
+\newcommand{\TabCaption}[1]{%
+\refstepcounter{table}
+\sbox{\@tempboxa}{\textbf{\tablename \@arabic\c@table. #1.}}%
+\ifdim \wd\@tempboxa >\columnwidth%
+    \textbf{\tablename\ \@arabic\c@table. #1.} \par
+\else
+    \global\@minipagefalse
+    \hbox to \columnwidth {\hfil \textbf{\tablename\ \@arabic\c@table. #1.}\hfil}%
+\fi
+  \vskip\belowcaptionskip}
+
+
+
+
+\if@russify
+
+    \def\Сyril#1{\@Cyril{\@nameuse {c@#1}}}
+    \def\@Cyril#1{\ifcase #1\or А\or Б\or В\or Г\or Д\or Е\or Ж\or З\or И\or Й\or К\or Л\or М\or
+    Н\or О\or П\or Р\or С\or Т\or У\or Ф\or Х\or Ц\or Ч\or Ш\or Щ\or Ы\or
+    Ю\or Э\or Я\else\@ctrerr  \fi
+    }
+
+    \def\cyril#1{\@cyril{\@nameuse {c@#1}}}
+    \def\@cyril#1{\ifcase #1\or а\or б\or в\or г\or д\or е\or ж\or з\or и\or й\or к\or л\or м\or
+    н\or о\or п\or р\or с\or т\or у\or ф\or х\or ц\or ч\or ш\or щ\or ы\or
+    ю\or э\or я\else\@ctrerr  \fi
+    }
+
+    \frenchspacing
+    \righthyphenmin=2
+
+    % изменение определения из стилевого пакета amsmath
+    \renewenvironment{subequations}{%
+    \refstepcounter{equation}%
+    \protected@edef\theparentequation{\theequation}%
+    \setcounter{parentequation}{\value{equation}}%
+    \setcounter{equation}{0}%
+    \def\theequation{\theparentequation.\emph{\cyril{equation}}}%
+    \ignorespaces
+    }{%
+    \setcounter{equation}{\value{parentequation}}%
+    \ignorespacesafterend
+    }
+
+    \def\today{\number\day\space
+                    \ifcase\month\or
+                    января\or февраля\or марта\or апреля\or мая\or
+                    июня\or июля\or августа\or сентября\or октября\or
+                    ноября\or декабря\fi\space\number\year\space г.}
+
+    \renewcommand{\partname}{Часть}
+    \renewcommand{\contentsname}{Оглавление}
+    \renewcommand{\figurename}{Рис.}
+    \renewcommand{\tablename}{Таблица}
+    \renewcommand{\appendixname}{Приложение}
+    \renewcommand{\refname}{Список литературы}
+    \renewcommand{\listtablename}{Список таблиц}
+    \renewcommand{\listfigurename}{Список иллюстраций}
+    \renewcommand{\abstractname}{Аннотация}
+    \renewcommand{\ackname}{Благодарности}
+    \renewcommand{\indexname}{Предметный указатель}
+
+    \def\tan{\mathop{\operator@font tg}\nolimits}
+    \def\arctan{\mathop{\operator@font arctg}\nolimits}
+    \def\cot{\mathop{\operator@font ctg}\nolimits}
+    \def\tanh{\mathop{\operator@font th}\nolimits}
+    \def\coth{\mathop{\operator@font cth}\nolimits}
+
+    \renewcommand{\theenumii}{\cyril{enumii}}
+    \renewcommand{\theenumiii}{\Roman{enumiii}}
+\fi
+
